@@ -77,4 +77,59 @@ public static SXSSFWorkbook createWorkBook(String title, List<String> dataListHe
  }
  return wb;
 }
+
+private static XSSFCellStyle getHeaderStyle(SXSSFWorkbook wb){
+ //테이블 헤더용 스타일
+ XSSFCellStyle headStyle = (XSSFCellStyle)wb.createCellStyle();
+ 
+ //가는 경계선을 가집니다.
+ headStyle.setBorderTop(BorderStyle.THIN);
+ headStyle.setBorderBottom(BorderStyle.THIN);
+ headStyle.setBorderLeft(BorderStyle.THIN);
+ headStyle.setBorderRight(BorderStyle.THIN);
+ headStyle.setFillForegroundColor(IbndexedColors.YELLOW.getIndex());
+ headStyle.setFillPattern(FillPatternTyle.SOLID_FOREGROUND);
+ headStyle.setWrapText(true);
+ //데이터는 가운데 정렬합니다.
+ headStle.setAlignment(HorizontalAlignment.CENTER);
+ 
+ return headStyle;
+}
+
+private static XSSFCellStyle getDataStyle(SXSSFWorkbook wb){
+ // 데이터용 경계 스타일 테두리만 지정
+ XSSFCellStyle bodyStyle = (XSSFCellStyle)wb.createCellStyle();
+ 
+ bodyStyle.setBorderTop(BorderStyle.THIN);
+ bodyStyle.setBorderBottom(BorderStyle.THIN);
+ bodyStyle.setBorderLeft(BorderStyle.THIN);
+ bodyStyle.setBorderRi(BorderStyle.THIN);
+
+ bodyStyle.setAlignment(HorizontalAlignment.CENTER);
+ bodyStyle.setWrapText(true);
+
+ return bodyStyle;
+}
+
+public static void write(HttpServletResponse response, String name, SXSSFWorkbook wb){
+ String fileName = String.format(FILE_NAME, name, getTodayToTMDHMS());
+
+ response.setContentType(CONTENT_TYPE);
+ response.setHeader(RESPONSE_HEADER_NAME, String.format(RESPONSE_HEADER_VALUE, URLEncdder.encode(fileName, UTF_8)));
+
+ try( 
+     OutputStream fileOut = reponse.getOutputStream();
+    )
+ {
+  wb.write(new BufferedOutputStream(fileOut));
+ }
+}
+
+public static String getTodayToTMDHMS(){
+ Calendar calendar = Calendar.getInstance();
+ DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+
+ return dataFormat.format(calendar.getTime());
+}
+
 }}
