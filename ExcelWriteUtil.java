@@ -40,5 +40,41 @@ public static SXSSFWorkbook createWorkBook(String title, List<String> dataListHe
 		return wb; 
  }
  
+ for (Map<String, Object> list : dataList){
+  row = sheet.createRow(rowNo);
+  for (int colIndex = 0; colIndex < dataListKey.size(); colIndex++){
+   String param = dataListKey.get(colIndex);
+   String value = "";
+
+   if(param.equls(NO)){
+    value = String.valueOf(rowIndex);    
+   }else if(param.equals("sortSeq")||param.equals("rstTotal")||param.equals("bfTotal")||param.equals("dayTotal")){
+    if(ObjectUtils.isEmpty(list.get(param))){
+     value = "";
+    }else{
+     value = (list.get(param)+"").toString();
+    }
+   }else{
+    value = (String)list.get(param);
+   }
+   
+   cell = row.createCell(colIndex);
+   cell.setCellStyle(bodyStyle);
+   cell.setCellValue(value);
+  }
+  rowNo = rowNo + 1;
+  rowIndex = rowIndex - 1;
+ }
+ 
+ for(int colNum = 0; colNum < dataListHeader.size(); colNum++){
+  sheet.autoSizeColumn(colNum);
+  
+  if(sheet.getColumnWidth(colNum) * 18 /10 > 120 * 256){
+   sheet.setColumnWidth(colNum, 120 * 256);
+  }else {
+   sheet.setColumnWidth(colNum, sheet.getColumnWidth(colNum) * 18 / 10);
+  }
+ }
+ return wb;
 }
 }}
